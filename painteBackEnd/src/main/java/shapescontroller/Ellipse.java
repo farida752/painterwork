@@ -2,21 +2,14 @@ package shapescontroller;
 
 public class Ellipse extends Shape {
 
-	String name;
-
-	public Ellipse(String name ,float x, float y, float x1, float y1, String color, String lineThickness) {
-		super(x, y, x1, y1, color, lineThickness);
+	public Ellipse(int id, float x, float y, float x1, float y1, String color, String lineThickness, String shapeType) {
+		super(id, x, y, x1, y1, color, lineThickness, shapeType);
 		// TODO Auto-generated constructor stub
-		this.name=name;
 	}
 
-	public String getName() {
-		return name;
-	}
+	
 
-	public void setName(String name) {
-		this.name = name;
-	}
+	
 	
 
 }

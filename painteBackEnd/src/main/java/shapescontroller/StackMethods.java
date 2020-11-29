@@ -77,10 +77,88 @@ public class StackMethods  {
 			s.size++;
 		}
 	}
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+	public static StackMethods getNumberOfOcuurencesOfElementID(StackMethods st,int id) {
+		Shape x= (Shape)st.peek();
+		if(st.isEmpty()||st==null) {
+			return null;
+		}else {
+			StackMethods tmp=st;
+			StackMethods occ=new StackMethods();
+			while(tmp.isEmpty()==false) {
+				if(id==((Shape)(tmp.peek())).id) {
+				occ.push(tmp.pop());
+				}else {
+					tmp.pop();
+				}
+			}
+			return occ;
+		}
+	}
+	///////////////////////////////////////////////////////////////////////////////////
+	public static StackMethods ReverseStack(StackMethods st) {
+		StackMethods tmp =new StackMethods();
+		while(st.isEmpty()==false) {
+			tmp.push(st.pop());
+		}
+		st=tmp;return tmp;
+	}
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	public static StackMethods getNumberOfOcuurencesOfLastElementID(StackMethods st) {
+		Shape x= (Shape)st.peek();
+		if(st.isEmpty()||st==null) {
+			return null;
+		}else {
+			StackMethods tmp=st;
+			StackMethods occ=new StackMethods();
+			while(tmp.isEmpty()==false) {
+				if(x.id==((Shape)(tmp.peek())).id) {
+				occ.push(tmp.pop());
+				}else {
+					tmp.pop();
+				}
+			}
+			return occ;
+		}
+	}
+	/////////////////////////////////////////////////////////////////////////////////////////
+	public StackMethods GetShapeById(StackMethods shapes,int id,Shape ModifiedShape) {
+		StackMethods sh1=shapes;
+		while(shapes.isEmpty()==false) {
+			if(((Shape)shapes.peek()).id==id) {
+				//we got shape with this id 
+				sh1.push(ModifiedShape);
+			}else {
+			sh1.push(shapes.pop());
+			}
+		}
+		//the elements are revered in the stack
+		//so return them again in shapes stack
+		while(sh1.isEmpty()==false) {
+			shapes.push(sh1.pop());
+		}
+		return shapes;
+	}
+	////////////////////////////////////////////////////////////////////////////////////
 	
-	
-	
-	
+	public StackMethods DelShapeById(StackMethods shapes,int id) {
+		StackMethods sh1=shapes;
+		while(shapes.isEmpty()==false) {
+			if(((Shape)shapes.peek()).id==id) {
+				//we got shape with this id 
+				//we willnot add it in this stack
+			}else {
+			sh1.push(shapes.pop());
+			}
+		}
+		//the elements are revered in the stack
+		//so return them again in shapes stack
+		while(sh1.isEmpty()==false) {
+			shapes.push(sh1.pop());
+		}
+		return shapes;
+	}
+	/////////////////////////////////////////////////////////////////
 	public boolean isEmpty() {
 		if(s.size==0||s.head==null) {
 			return true;
@@ -90,12 +168,12 @@ public class StackMethods  {
 		}
 	}
 	
-	
+	//////////////////////////////////////////////////////////
 	public int size() {
 		return s.size;
 	}
 	
-	
+	////////////////////////////////////////////////////////
 }
 
 
