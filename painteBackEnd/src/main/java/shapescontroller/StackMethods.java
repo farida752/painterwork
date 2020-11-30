@@ -10,7 +10,7 @@ class LinkedList{
 	SNode tail;
 	int size=0;
 }
-public class StackMethods  {
+public class StackMethods implements Cloneable{
 	LinkedList s=new LinkedList();
 	public Object pop() {
 		if(s.size==1) {
@@ -81,6 +81,110 @@ public class StackMethods  {
 	
 	
 	
+	
+	public static StackMethods getNumberOfOcuurencesOfElementID(StackMethods st,int id) {
+		Shape x= (Shape)st.peek();
+		if(st.isEmpty()||st.equals(null)) {
+			return null;
+		}else {
+			StackMethods tmp=st;
+			StackMethods tmp2=new StackMethods();
+			StackMethods occ=new StackMethods();
+			while(tmp.isEmpty()==false) {
+				if(id==((Shape)(tmp.peek())).id) {
+				occ.push(tmp.peek());
+				tmp2.push(tmp.pop());
+				}else {
+					tmp2.push(tmp.pop());
+				}
+			}
+			while(tmp2.isEmpty()==false) {
+				tmp.push(tmp2.pop());
+			}st=tmp2;
+			StackMethods s=new StackMethods();
+			occ=s.ReverseStack(occ);
+			return occ;
+		}
+	}
+	
+	public static StackMethods ReverseStack(StackMethods st) {
+		StackMethods tmp =new StackMethods();
+		while(st.isEmpty()==false) {
+			tmp.push(st.pop());
+		}
+		st=tmp;return tmp;
+	}
+	////////////////////////////////////////////////////////////////////////////////////////////////
+	public  StackMethods getNumberOfOcuurencesOfLastElementID(StackMethods st) {
+		Shape x= (Shape)st.peek();
+		if(st.isEmpty()||st==null) {
+			return null;
+		}else {
+			StackMethods tmp=st;
+			StackMethods tmp2=new StackMethods();
+			StackMethods occ=new StackMethods();
+			StackMethods occ2=new StackMethods();
+			while(tmp.isEmpty()==false) {
+				if(x.id==((Shape)(tmp.peek())).id) {
+				occ.push(tmp.peek());
+				tmp2.push(tmp.pop());
+				}else {
+					tmp2.push(tmp.pop());
+				}
+			}
+			while(tmp2.isEmpty()==false) {
+				tmp.push(tmp2.pop());st=tmp;
+			}
+			/*while(occ.isEmpty()==false) {
+				occ2.push(occ.pop());st=tmp;
+			}*/
+			return occ;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////////////////////
+	public StackMethods GetShapeById(StackMethods shapes,int id,Shape ModifiedShape) {
+		System.out.println("size of the given stack from the other method ");
+		System.out.println(shapes.size());
+		
+		StackMethods sh1=new StackMethods();
+		while(shapes.isEmpty()==false) {
+			if(((Shape)shapes.peek()).id==id) {
+				//we got shape with this id 
+				sh1.push(ModifiedShape);
+				shapes.pop();
+			}else {
+			sh1.push(shapes.pop());
+			}
+		}
+		//the elements are revered in the stack
+		//so return them again in shapes stack
+		while(sh1.isEmpty()==false) {
+			shapes.push(sh1.pop());
+		}
+       System.out.println("size of stack from the other method");
+       System.out.println(shapes.size());
+		return shapes;
+	}
+	///////////////////////////////////////////////////////////////////////////////////////////////////
+	public StackMethods DelShapeById(StackMethods shapes,int id) {
+		StackMethods sh1=new StackMethods();
+		while(shapes.isEmpty()==false) {
+			if(((Shape)shapes.peek()).id==id) {
+				//we got shape with this id 
+				//we willnot add it in this stack
+				shapes.pop();
+			}else {
+			sh1.push(shapes.pop());
+			}
+		}
+		//the elements are revered in the stack
+		//so return them again in shapes stack
+		while(sh1.isEmpty()==false) {
+			shapes.push(sh1.pop());
+		}
+		return shapes;
+	}
+	////////////////////////////////////////////////////////////////////////////////
 	public boolean isEmpty() {
 		if(s.size==0||s.head==null) {
 			return true;
@@ -94,8 +198,18 @@ public class StackMethods  {
 	public int size() {
 		return s.size;
 	}
-	
+	/////////////////////////////////////////////////////////////
+	/*public StackMethod copyOfStack (StackMethod given) {
+		StackMethod copied1 = new StackMethod();
+		StackMethod copied2 = new StackMethod();
+		while(given.isEmpty()==false) {
+			copied1.push(given.pop());
+		}
+		while(copied1.isEmpty()==false) {
+			copied2.push(copied1.pop());
+		}
+		
+	}*/
 	
 }
-
 
