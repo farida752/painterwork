@@ -1,22 +1,39 @@
 package shapescontroller;
 
 public class Rectangle extends Shape{
+	
+	double xMax;
+	double xMin;
+	double yMax;
+	double yMin;
 
-	String name;
-
-	public Rectangle(String name ,float x, float y, float x1, float y1, String color, String lineThickness) {
-		super(x, y, x1, y1, color, lineThickness);
+	public Rectangle(int id, double x, double y, double x1, double y1, String color, String lineThickness,
+			String shapeType ,boolean filled) {
+		super(id, x, y, x1, y1, color, lineThickness, shapeType,filled);
 		// TODO Auto-generated constructor stub
-		this.name=name;
 	}
 
-	public String getName() {
-		return name;
+	public boolean isInclude(double a ,double b) {
+		if(x<x1) {
+			xMin=x;
+			xMax=x1;
+			}else {
+				xMin=x1;
+				xMax=x;}
+		if(y<y1) {
+			yMin=y;
+			yMax=y1;
+		}else {
+			yMin=y1;
+			yMax=y;}
+		if(xMin<=a&&xMax>=a&&yMin<=b&&yMax>=b) {
+			return true;
+		}else {
+			return false;
+		}
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
+	
 	
 
 }
