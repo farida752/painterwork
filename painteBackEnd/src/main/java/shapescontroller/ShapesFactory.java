@@ -135,9 +135,10 @@ public  Shape getShape (@RequestParam(value = "id") int id,@RequestParam(value =
 				/*StackMethods newst =*/ se.getNumberOfOcuurencesOfLastElementID(stepsStack);
 						//newst.pop();
 				//we poped last occurence only we will leave previous modification
-				Shape x=(Shape)se.getNumberOfOcuurencesOfLastElementID(stepsStack).peek();
-	   System.out.println(x.getX());
-				stackshapes=se.GetShapeById(stackshapes, x.id, x);
+				StackMethods stack=se.getNumberOfOcuurencesOfLastElementID(stepsStack);stack.pop();
+				Shape x=(Shape)stack.peek();
+				System.out.println(x.getX());
+				stackshapes=se.GetShapeById(stackshapes,x.id, x);
 			}else {
 				// there was only one version in stake of steps so we should delete it from stackShapes
 				Shape x=(Shape)se.getNumberOfOcuurencesOfLastElementID(stepsStack).peek();
@@ -152,7 +153,7 @@ public  Shape getShape (@RequestParam(value = "id") int id,@RequestParam(value =
 	public  Object[][] redo () {
 		System.out.println("the redo");
 		Object[][] pointsSteps4= convertStackToArray(redo);
-		for(int i=0 ;i<1;i++) {
+		/*for(int i=0 ;i<1;i++) {
 			for(int j=0 ;j<9;j++) {
 				System.out.println(pointsSteps4[i][j]);
 																		
@@ -161,7 +162,7 @@ public  Shape getShape (@RequestParam(value = "id") int id,@RequestParam(value =
 		}
 		if(redo.isEmpty()==true) {
 			return null;
-		}
+		}*/
 		StackMethods se=new StackMethods();
 		stepsStack.push(redo.pop());
 		if(se.getNumberOfOcuurencesOfLastElementID(stepsStack).size()>1) {
@@ -169,11 +170,11 @@ public  Shape getShape (@RequestParam(value = "id") int id,@RequestParam(value =
 			//so we can search for it in the shapes state and modify it
 			
 			StackMethods occ =se.getNumberOfOcuurencesOfLastElementID(stepsStack);
-			StackMethods occ2=new StackMethods();
+			/*StackMethods occ2=new StackMethods();
 			while(occ.isEmpty()==false) {
 			occ2.push(occ.pop());
-			}
-			Shape x=(Shape)occ2.peek();
+		    }*/
+			Shape x=(Shape)occ.peek();
 			System.out.println("the shap we get from the redo x field "+x.getX());
 			stackshapes=se.GetShapeById(stackshapes, x.id, x);		
 		}else {
@@ -184,24 +185,32 @@ public  Shape getShape (@RequestParam(value = "id") int id,@RequestParam(value =
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//to edit color and line thickness 
 	@GetMapping ("/modify")
-	public  Object[][] modify(@RequestParam (value="fcx") double x1,@RequestParam(value="fcy") double y1
-			,@RequestParam (value="modificationType")String modificationType,@RequestParam (value="modificationValue")String modifiedValue){
+	public  Object[][] modify(@RequestParam double x1,@RequestParam double y1
+			,String modificationType,String modifiedValue){
 
+		
 		StackMethods s=(StackMethods)states.getIncluded(x1,y1);
-		StackMethods ss = s;
+		StackMethods.copy(states.getIncluded(x1,y1), s);
+		StackMethods ss = new StackMethods();//s;
+		StackMethods.copy(s, ss);
 		StackMethods tmp =new StackMethods();
 
 		 if(modificationType.contentEquals("color")) {
 			while(ss.isEmpty()==false) {
-				((Shape)ss.peek()).setColor(modifiedValue);
-				((Shape)ss.peek()).setFilled(true);
+				//Shape x=((Shape)ss.peek());
+				Shape x=new Shape(((Shape)(ss.peek())).getId(),((Shape)(ss.peek())).getX(), ((Shape)(ss.peek())).getY(), ((Shape)(ss.peek())).getX1(),
+((Shape)(ss.peek())).getY1(), modifiedValue, ((Shape)(ss.peek())).getLineThickness(), ((Shape)(ss.peek())).shapeType, true);
+				//x.setColor(modifiedValue);
+				//x.setFilled(true);
+				StackMethods.GetShapeById(ss, x.getId(), x);
 				tmp.push(ss.pop());
 			}
 			//tmp stack contains now all the changes lets modify steps stack,shapes stack
+			
 			while(tmp.isEmpty()==false) {
 				stepsStack.push(tmp.peek());
 				//search for element tmp in stack shapes and modify it
-				stackshapes.GetShapeById(stackshapes, ((Shape)tmp.peek()).id,(Shape)tmp.peek());
+				StackMethods.GetShapeById(stackshapes, ((Shape)tmp.peek()).id,(Shape)tmp.peek());
 				tmp.pop();
 			}
 			return states.convertStackToArray(stackshapes);
@@ -217,7 +226,7 @@ public  Shape getShape (@RequestParam(value = "id") int id,@RequestParam(value =
 			while(tmp.isEmpty()==false) {
 				stepsStack.push(tmp.peek());
 				//search for element tmp in stack shapes and modify it
-				stackshapes.GetShapeById(stackshapes, ((Shape)tmp.peek()).id,(Shape)tmp.peek());
+				StackMethods.GetShapeById(stackshapes, ((Shape)tmp.peek()).id,(Shape)tmp.peek());
 				tmp.pop();
 			}
 			return states.convertStackToArray(stackshapes);
@@ -391,20 +400,40 @@ public static  Object[][] convertStackToArray(StackMethods given) {
 
 
 @GetMapping("/load")
-public Object[][] getFromXMlFile(String path) {
-	LoadXML l=new LoadXML();
-	Object []arrSteps=(l.XMLReader(path)).getSteps();
+public Object[][] getFromXMlFile(@RequestParam String path,@RequestParam String fileName,@RequestParam String fileType) {
+	Load l=new Load();
+	if(fileType.contentEquals("xml")) {
+	Object []arrSteps=(l.XMLReader(path,fileName)).getSteps();
 	StackMethods.copy(states.ConvertArr1DToStackSteps(arrSteps),stepsStack);
-	Object [][]arrShapes=(l.XMLReader(path)).getShapes();
+	Object [][]arrShapes=(l.XMLReader(path,fileName)).getShapes();
 	StackMethods.copy(states.ConvertArr2DToStackShapes(arrShapes),stackshapes);
 	return arrShapes;
+	}
+	else if(fileType.contentEquals("json")) {
+		Object []arrSteps=(l.JSONReader(path, fileName)).getSteps();
+		StackMethods.copy(states.ConvertArr1DToStackSteps(arrSteps),stepsStack);
+		Object [][]arrShapes=(l.JSONReader(path, fileName)).getShapes();
+		StackMethods.copy(states.ConvertArr2DToStackShapes(arrShapes),stackshapes);
+		return arrShapes;
+	}
+	return null;
 }
 
 @GetMapping("/save")
-public void saveXML(@RequestParam String path,@RequestParam String fileName){
+public Object[][] saveXML(@RequestParam String path,@RequestParam String fileName,@RequestParam String fileType){
+	if(fileType.contentEquals("xml")) {
 	Object shapes[][] =states.convertStackToArray(stackshapes);
 	Object steps[]=states.ConvertStackStepsTo1DArray(stepsStack);
-	SaveAsXML s=new SaveAsXML();
+	Save s=new Save();
 	s.XMLWriter(path, fileName, shapes, steps);
+	return shapes;
+	}else if(fileType.contentEquals("json")){
+		Object shapes[][] =states.convertStackToArray(stackshapes);
+		Object steps[]=states.ConvertStackStepsTo1DArray(stepsStack);
+		Save s=new Save();
+		s.JSONWriter(path, fileName, shapes, steps);
+		return shapes;
+	}
+	return states.convertStackToArray(stackshapes);
 }
 }
