@@ -120,21 +120,23 @@ public class StackMethods implements Cloneable{
 		if(st.isEmpty()||st==null) {
 			return null;
 		}else {
-			StackMethods tmp=st;
+			StackMethods tmp=new StackMethods();StackMethods.copy(st, tmp);
+			
 			StackMethods tmp2=new StackMethods();
 			StackMethods occ=new StackMethods();
-			StackMethods occ2=new StackMethods();
 			while(tmp.isEmpty()==false) {
-				if(x.id==((Shape)(tmp.peek())).id) {
+				if(x.getId()==((Shape)(tmp.peek())).getId()) {
 				occ.push(tmp.peek());
 				tmp2.push(tmp.pop());
 				}else {
 					tmp2.push(tmp.pop());
 				}
-			}
+			}System.out.println(occ.size()+"    555555555555555");
+			occ=StackMethods.ReverseStack(occ);
 			while(tmp2.isEmpty()==false) {
-				tmp.push(tmp2.pop());st=tmp;
+				tmp.push(tmp2.pop());
 			}
+			st=StackMethods.copy(tmp, st);
 			/*while(occ.isEmpty()==false) {
 				occ2.push(occ.pop());st=tmp;
 			}*/
@@ -142,13 +144,13 @@ public class StackMethods implements Cloneable{
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////////////////////
-	public StackMethods GetShapeById(StackMethods shapes,int id,Shape ModifiedShape) {
+	public static StackMethods GetShapeById(StackMethods shapes,int id,Shape ModifiedShape) {
 		System.out.println("size of the given stack from the other method ");
 		System.out.println(shapes.size());
 		
 		StackMethods sh1=new StackMethods();
 		while(shapes.isEmpty()==false) {
-			if(((Shape)shapes.peek()).id==id) {
+			if((((Shape)(shapes.peek())).id)==id) {
 				//we got shape with this id 
 				sh1.push(ModifiedShape);
 				shapes.pop();
@@ -198,18 +200,7 @@ public class StackMethods implements Cloneable{
 	public int size() {
 		return s.size;
 	}
-	/////////////////////////////////////////////////////////////
-	/*public StackMethod copyOfStack (StackMethod given) {
-		StackMethod copied1 = new StackMethod();
-		StackMethod copied2 = new StackMethod();
-		while(given.isEmpty()==false) {
-			copied1.push(given.pop());
-		}
-		while(copied1.isEmpty()==false) {
-			copied2.push(copied1.pop());
-		}
-		
-	}*/
+	
 	public static StackMethods copy(StackMethods s1,StackMethods tmp2) {
 		StackMethods tmp=new StackMethods();
 		while(tmp2.isEmpty()==false) {
@@ -225,5 +216,18 @@ public class StackMethods implements Cloneable{
 		}
 		return tmp2;
 	}
+	/////////////////////////////////////////////////////////////
+	/*public StackMethod copyOfStack (StackMethod given) {
+		StackMethod copied1 = new StackMethod();
+		StackMethod copied2 = new StackMethod();
+		while(given.isEmpty()==false) {
+			copied1.push(given.pop());
+		}
+		while(copied1.isEmpty()==false) {
+			copied2.push(copied1.pop());
+		}
+		
+	}*/
+	
 }
 
